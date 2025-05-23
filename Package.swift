@@ -2,15 +2,15 @@
 import PackageDescription
 
 let package = Package(
-    name: "KtranslateCore",
+    name: "Ktranslate", // Changed
     platforms: [
-        .macOS(.v13), // Updated
+        .macOS(.v13),
         .iOS(.v15)
     ],
     products: [
-        .library(
-            name: "KtranslateCore",
-            targets: ["KtranslateCore"])
+        .executable( // Changed to executable
+            name: "Ktranslate", // Product name
+            targets: ["Ktranslate"]) // Points to the executable target
     ],
     dependencies: [
         // No external dependencies yet
@@ -19,14 +19,16 @@ let package = Package(
         .target(
             name: "KtranslateCore",
             dependencies: [],
-            path: "Ktranslate", // Point to the existing folder where all .swift files are
-            exclude: ["KtranslateApp.swift"]
+            path: "Ktranslate",
+            exclude: ["KtranslateApp.swift", "Info.plist"], // Ensure KtranslateApp.swift is excluded
+            sources: nil // Let Swift discover sources, respecting excludes
+        ),
+        .executableTarget( // New executable target
+            name: "Ktranslate", // Executable target name
+            dependencies: ["KtranslateCore"], // Depends on the library
+            path: "Ktranslate",
+            sources: ["KtranslateApp.swift"] // Explicitly include KtranslateApp.swift
         )
-        // We can add a test target later:
-        // .testTarget(
-        // name: "KtranslateCoreTests",
-        // dependencies: ["KtranslateCore"],
-        // path: "KtranslateTests" // Assuming tests will be in KtranslateTests folder
-        // )
+        // Test target can be added later
     ]
 )
