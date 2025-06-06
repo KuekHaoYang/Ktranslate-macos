@@ -1,0 +1,546 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXContainerItemProxy section */
+		448341CC2DF313E300B4B607 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 448341B52DF313E100B4B607 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 448341BC2DF313E100B4B607;
+			remoteInfo = KTranslate;
+		};
+		448341D62DF313E300B4B607 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 448341B52DF313E100B4B607 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 448341BC2DF313E100B4B607;
+			remoteInfo = KTranslate;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		448341BD2DF313E100B4B607 /* KTranslate.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = KTranslate.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		448341CB2DF313E300B4B607 /* KTranslateTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KTranslateTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		448341D52DF313E300B4B607 /* KTranslateUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KTranslateUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		448341BF2DF313E100B4B607 /* KTranslate */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = KTranslate;
+			sourceTree = "<group>";
+		};
+		448341CE2DF313E300B4B607 /* KTranslateTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = KTranslateTests;
+			sourceTree = "<group>";
+		};
+		448341D82DF313E300B4B607 /* KTranslateUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = KTranslateUITests;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		448341BA2DF313E100B4B607 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		448341C82DF313E300B4B607 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		448341D22DF313E300B4B607 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		448341B42DF313E100B4B607 = {
+			isa = PBXGroup;
+			children = (
+				448341BF2DF313E100B4B607 /* KTranslate */,
+				448341CE2DF313E300B4B607 /* KTranslateTests */,
+				448341D82DF313E300B4B607 /* KTranslateUITests */,
+				448341BE2DF313E100B4B607 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		448341BE2DF313E100B4B607 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				448341BD2DF313E100B4B607 /* KTranslate.app */,
+				448341CB2DF313E300B4B607 /* KTranslateTests.xctest */,
+				448341D52DF313E300B4B607 /* KTranslateUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		448341BC2DF313E100B4B607 /* KTranslate */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 448341DF2DF313E300B4B607 /* Build configuration list for PBXNativeTarget "KTranslate" */;
+			buildPhases = (
+				448341B92DF313E100B4B607 /* Sources */,
+				448341BA2DF313E100B4B607 /* Frameworks */,
+				448341BB2DF313E100B4B607 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				448341BF2DF313E100B4B607 /* KTranslate */,
+			);
+			name = KTranslate;
+			packageProductDependencies = (
+			);
+			productName = KTranslate;
+			productReference = 448341BD2DF313E100B4B607 /* KTranslate.app */;
+			productType = "com.apple.product-type.application";
+		};
+		448341CA2DF313E300B4B607 /* KTranslateTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 448341E22DF313E300B4B607 /* Build configuration list for PBXNativeTarget "KTranslateTests" */;
+			buildPhases = (
+				448341C72DF313E300B4B607 /* Sources */,
+				448341C82DF313E300B4B607 /* Frameworks */,
+				448341C92DF313E300B4B607 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				448341CD2DF313E300B4B607 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				448341CE2DF313E300B4B607 /* KTranslateTests */,
+			);
+			name = KTranslateTests;
+			packageProductDependencies = (
+			);
+			productName = KTranslateTests;
+			productReference = 448341CB2DF313E300B4B607 /* KTranslateTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		448341D42DF313E300B4B607 /* KTranslateUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 448341E52DF313E300B4B607 /* Build configuration list for PBXNativeTarget "KTranslateUITests" */;
+			buildPhases = (
+				448341D12DF313E300B4B607 /* Sources */,
+				448341D22DF313E300B4B607 /* Frameworks */,
+				448341D32DF313E300B4B607 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				448341D72DF313E300B4B607 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				448341D82DF313E300B4B607 /* KTranslateUITests */,
+			);
+			name = KTranslateUITests;
+			packageProductDependencies = (
+			);
+			productName = KTranslateUITests;
+			productReference = 448341D52DF313E300B4B607 /* KTranslateUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		448341B52DF313E100B4B607 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1640;
+				LastUpgradeCheck = 1640;
+				TargetAttributes = {
+					448341BC2DF313E100B4B607 = {
+						CreatedOnToolsVersion = 16.4;
+					};
+					448341CA2DF313E300B4B607 = {
+						CreatedOnToolsVersion = 16.4;
+						TestTargetID = 448341BC2DF313E100B4B607;
+					};
+					448341D42DF313E300B4B607 = {
+						CreatedOnToolsVersion = 16.4;
+						TestTargetID = 448341BC2DF313E100B4B607;
+					};
+				};
+			};
+			buildConfigurationList = 448341B82DF313E100B4B607 /* Build configuration list for PBXProject "KTranslate" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 448341B42DF313E100B4B607;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 448341BE2DF313E100B4B607 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				448341BC2DF313E100B4B607 /* KTranslate */,
+				448341CA2DF313E300B4B607 /* KTranslateTests */,
+				448341D42DF313E300B4B607 /* KTranslateUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		448341BB2DF313E100B4B607 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		448341C92DF313E300B4B607 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		448341D32DF313E300B4B607 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		448341B92DF313E100B4B607 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		448341C72DF313E300B4B607 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		448341D12DF313E300B4B607 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		448341CD2DF313E300B4B607 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 448341BC2DF313E100B4B607 /* KTranslate */;
+			targetProxy = 448341CC2DF313E300B4B607 /* PBXContainerItemProxy */;
+		};
+		448341D72DF313E300B4B607 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 448341BC2DF313E100B4B607 /* KTranslate */;
+			targetProxy = 448341D62DF313E300B4B607 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		448341DD2DF313E300B4B607 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.5;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		448341DE2DF313E300B4B607 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.5;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+			};
+			name = Release;
+		};
+		448341E02DF313E300B4B607 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = KTranslate/KTranslate.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.kuekhaoyang.KTranslate;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		448341E12DF313E300B4B607 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = KTranslate/KTranslate.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.kuekhaoyang.KTranslate;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		448341E32DF313E300B4B607 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.kuekhaoyang.KTranslateTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/KTranslate.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/KTranslate";
+			};
+			name = Debug;
+		};
+		448341E42DF313E300B4B607 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.kuekhaoyang.KTranslateTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/KTranslate.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/KTranslate";
+			};
+			name = Release;
+		};
+		448341E62DF313E300B4B607 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.kuekhaoyang.KTranslateUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = KTranslate;
+			};
+			name = Debug;
+		};
+		448341E72DF313E300B4B607 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.kuekhaoyang.KTranslateUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = KTranslate;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		448341B82DF313E100B4B607 /* Build configuration list for PBXProject "KTranslate" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				448341DD2DF313E300B4B607 /* Debug */,
+				448341DE2DF313E300B4B607 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		448341DF2DF313E300B4B607 /* Build configuration list for PBXNativeTarget "KTranslate" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				448341E02DF313E300B4B607 /* Debug */,
+				448341E12DF313E300B4B607 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		448341E22DF313E300B4B607 /* Build configuration list for PBXNativeTarget "KTranslateTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				448341E32DF313E300B4B607 /* Debug */,
+				448341E42DF313E300B4B607 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		448341E52DF313E300B4B607 /* Build configuration list for PBXNativeTarget "KTranslateUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				448341E62DF313E300B4B607 /* Debug */,
+				448341E72DF313E300B4B607 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 448341B52DF313E100B4B607 /* Project object */;
+}
