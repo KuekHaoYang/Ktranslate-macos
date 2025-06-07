@@ -3,24 +3,21 @@ import SwiftUI
 
 struct SettingsView: View {
     @Binding var isPresented: Bool
-    var onSettingsSaved: () -> Void // Callback to notify ContentView
+    var onSettingsSaved: () -> Void
 
     @StateObject private var viewModel = SettingsViewModel()
     @FocusState private var focusedField: FocusableField?
-    @State private var previousFocusedField: FocusableField? = nil // Added to track old focus
 
     enum FocusableField: Hashable {
         case openAIKey, openAIHost, geminiKey
     }
 
     private func handleFocusChange(oldValue: FocusableField?, newValue: FocusableField?) {
-        // OpenAI: Fetch if focus moves away from API key or Host, and both are filled
         if (oldValue == .openAIKey && newValue != .openAIKey) || (oldValue == .openAIHost && newValue != .openAIHost) {
-            if !viewModel.openAIAPIKey.isEmpty && !(viewModel.openAIHost.isEmpty) && viewModel.selectedService == .openAI {
+            if !viewModel.openAIAPIKey.isEmpty && !viewModel.openAIHost.isEmpty && viewModel.selectedService == .openAI {
                  viewModel.fetchOpenAIModels()
             }
         }
-        // Gemini: Fetch if focus moves away from API key, and it's filled
         if oldValue == .geminiKey && newValue != .geminiKey {
             if !viewModel.geminiAPIKey.isEmpty && viewModel.selectedService == .gemini {
                 viewModel.fetchGeminiModels()
@@ -65,15 +62,17 @@ struct SettingsView: View {
         }
         .frame(minWidth: 480, idealWidth: 520, maxWidth: 600, minHeight: 500, idealHeight: 580, maxHeight: 700)
         .background(.ultraThinMaterial)
-        .onChange(of: focusedField) { newValue in // Corrected signature
-            handleFocusChange(oldValue: previousFocusedField, newValue: newValue)
-            previousFocusedField = newValue // Update after handling
+        .onChange(of: focusedField) { oldValue, newValue in // Updated signature
+            handleFocusChange(oldValue: oldValue, newValue: newValue)
         }
         .alert(viewModel.alertTitle, isPresented: $viewModel.showAlert) {
             Button("OK", role: .cancel) {}
         } message: {
             Text(viewModel.alertMessage)
         }
+        // Apply a default tint to the whole view for consistency if desired,
+        // or tint individual elements like buttons.
+        // For Settings, often buttons are explicitly styled.
     }
 
     @ViewBuilder
@@ -178,6 +177,7 @@ struct SettingsView: View {
                 }
                 .pickerStyle(.menu)
                 .disabled(isDisabled || models.isEmpty && !isLoading && errorMessage == nil)
+                // .tint(Color.accentColor) // Picker can also be tinted if desired
 
                 if isLoading {
                     ProgressView().scaleEffect(0.7).frame(width: 20, height: 20)
@@ -194,6 +194,7 @@ struct SettingsView: View {
                 viewModel.presentAlert(title: "Settings Reset", message: "All settings have been restored to their default values.")
             }
             .keyboardShortcut(.delete, modifiers: .command)
+            .tint(Color.accentColor) // Apply accent color
 
             Spacer()
 
@@ -202,6 +203,7 @@ struct SettingsView: View {
                 isPresented = false
             }
             .keyboardShortcut(.escape, modifiers: [])
+            // Cancel buttons usually don't get the primary accent color
 
             Button("Save") {
                 viewModel.saveSettings()
@@ -211,6 +213,7 @@ struct SettingsView: View {
             .keyboardShortcut("s", modifiers: .command)
             .disabled( (viewModel.selectedService == .openAI && (viewModel.openAIAPIKey.isEmpty || viewModel.selectedOpenAIModelId.isEmpty)) ||
                        (viewModel.selectedService == .gemini && (viewModel.geminiAPIKey.isEmpty || viewModel.selectedGeminiModelId.isEmpty)) )
+            .tint(Color.accentColor) // Apply accent color to the primary save action
         }
     }
 }

@@ -41,23 +41,23 @@ class SettingsViewModel: ObservableObject {
     var isModelSelectionDisabled: Bool {
         switch selectedService {
         case .openAI:
-            return openAIAPIKey.isEmpty || isLoadingOpenAIModels
+            // Models should be selectable if already loaded, even if API key is then cleared (user might want to see what was selected)
+            // Disabling should primarily be if models are loading, or if no API key/host has EVER been validly entered for this session.
+            // Or if an error occurred that prevents model selection.
+            return isLoadingOpenAIModels || (openAIModels.isEmpty && (openAIAPIKey.isEmpty || openAIHost.isEmpty))
         case .gemini:
-            return geminiAPIKey.isEmpty || isLoadingGeminiModels
+            return isLoadingGeminiModels || (geminiModels.isEmpty && geminiAPIKey.isEmpty)
         }
     }
 
     init() {
-        // Stage 1: Initialize all @Published properties with default/empty values.
-        // This ensures they are all fully initialized before any potential cross-access.
-        self.selectedService = .openAI // Default, will be overwritten
+        self.selectedService = .openAI
         self.openAIAPIKey = ""
         self.openAIHost = ""
         self.selectedOpenAIModelId = ""
         self.geminiAPIKey = ""
         self.selectedGeminiModelId = ""
 
-        // Stage 2: Now assign actual values from @AppStorage or other defaults.
         let initialService = TranslationServiceType(rawValue: storedSelectedServiceRaw) ?? .openAI
         self.selectedService = initialService
         self.openAIAPIKey = storedOpenAIAPIKey
@@ -66,9 +66,11 @@ class SettingsViewModel: ObservableObject {
         self.geminiAPIKey = storedGeminiAPIKey
         self.selectedGeminiModelId = storedGeminiModelId
 
+        // Initial model load logic
         updateModelsForSelectedService(service: initialService, isInitialLoad: true)
-        setupApiKeyListeners()
-        setupServiceChangeListener()
+
+        setupServiceChangeListener() // Handles subsequent service changes
+        setupApiKeyListeners()       // Handles subsequent key/host changes
     }
 
     private func setupServiceChangeListener() {
@@ -82,139 +84,156 @@ class SettingsViewModel: ObservableObject {
 
     private func updateModelsForSelectedService(service: TranslationServiceType, isInitialLoad: Bool) {
         if service == .openAI {
-            geminiModels = []
+            geminiModels = [] // Clear other service's models and error
             geminiModelErrorMessage = nil
-            if !openAIAPIKey.isEmpty || (isInitialLoad && !storedOpenAIAPIKey.isEmpty) {
-                fetchOpenAIModels()
-            } else if openAIAPIKey.isEmpty { // If API key is empty, clear models
+            // Use current @Published values unless it's the very first load from @AppStorage
+            let keyToUse = isInitialLoad ? storedOpenAIAPIKey : openAIAPIKey
+            let hostToUse = isInitialLoad ? (storedOpenAIHost.isEmpty ? "https://api.openai.com" : storedOpenAIHost) : openAIHost
+
+            if !keyToUse.isEmpty && !hostToUse.isEmpty {
+                fetchOpenAIModels() // fetchOpenAIModels uses self.openAIAPIKey and self.openAIHost internally
+            } else {
                 openAIModels = []
                 selectedOpenAIModelId = ""
+                if keyToUse.isEmpty { openAIModelErrorMessage = "OpenAI API Key is missing." }
+                else if hostToUse.isEmpty { openAIModelErrorMessage = "OpenAI API Host is missing." } // Should only happen if user clears a non-empty default
             }
         } else { // Gemini
-            openAIModels = []
+            openAIModels = [] // Clear other service's models and error
             openAIModelErrorMessage = nil
-            if !geminiAPIKey.isEmpty || (isInitialLoad && !storedGeminiAPIKey.isEmpty) {
-                fetchGeminiModels()
-            } else if geminiAPIKey.isEmpty { // If API key is empty, clear models
+            let keyToUse = isInitialLoad ? storedGeminiAPIKey : geminiAPIKey
+
+            if !keyToUse.isEmpty {
+                fetchGeminiModels() // fetchGeminiModels uses self.geminiAPIKey internally
+            } else {
                 geminiModels = []
                 selectedGeminiModelId = ""
+                if keyToUse.isEmpty { geminiModelErrorMessage = "Gemini API Key is missing." }
             }
         }
     }
 
     private func setupApiKeyListeners() {
+        // Listener for OpenAI API Key
         $openAIAPIKey
-            .dropFirst()
+            .dropFirst() // Handled by init or service change
             .debounce(for: .milliseconds(500), scheduler: DispatchQueue.main)
             .removeDuplicates()
             .sink { [weak self] key in
-                guard let self = self, self.selectedService == .openAI else { return }
-                if key.isEmpty {
-                    self.openAIModels = []
-                    self.selectedOpenAIModelId = ""
-                    self.openAIModelErrorMessage = "OpenAI API Key is missing."
-                } else {
-                    self.fetchOpenAIModels()
+                guard let self = self else { return }
+                if self.selectedService == .openAI {
+                    if key.isEmpty {
+                        self.openAIModels = []; self.selectedOpenAIModelId = ""; self.openAIModelErrorMessage = "OpenAI API Key is missing."
+                    } else if self.openAIHost.isEmpty {
+                        self.openAIModels = []; self.selectedOpenAIModelId = ""; self.openAIModelErrorMessage = "OpenAI API Host is missing."
+                    } else { // Key and host are present
+                        self.fetchOpenAIModels()
+                    }
                 }
             }
             .store(in: &cancellables)
 
+        // Listener for OpenAI Host
         $openAIHost
-            .dropFirst()
+            .dropFirst() // Handled by init or service change
             .debounce(for: .milliseconds(500), scheduler: DispatchQueue.main)
             .removeDuplicates()
             .sink { [weak self] host in
-                guard let self = self, self.selectedService == .openAI, !self.openAIAPIKey.isEmpty else { return }
-                // Host change implies re-fetching models.
-                self.fetchOpenAIModels()
+                guard let self = self else { return }
+                if self.selectedService == .openAI {
+                    if host.isEmpty {
+                        self.openAIModels = []; self.selectedOpenAIModelId = ""; self.openAIModelErrorMessage = "OpenAI API Host is missing."
+                    } else if self.openAIAPIKey.isEmpty {
+                        self.openAIModels = []; self.selectedOpenAIModelId = ""; self.openAIModelErrorMessage = "OpenAI API Key is missing."
+                    } else { // Host and key are present
+                        self.fetchOpenAIModels()
+                    }
+                }
             }
             .store(in: &cancellables)
 
+        // Listener for Gemini API Key
         $geminiAPIKey
-            .dropFirst()
+            .dropFirst() // Handled by init or service change
             .debounce(for: .milliseconds(500), scheduler: DispatchQueue.main)
             .removeDuplicates()
             .sink { [weak self] key in
-                guard let self = self, self.selectedService == .gemini else { return }
-                if key.isEmpty {
-                    self.geminiModels = []
-                    self.selectedGeminiModelId = ""
-                    self.geminiModelErrorMessage = "Gemini API Key is missing."
-                } else {
-                    self.fetchGeminiModels()
+                guard let self = self else { return }
+                if self.selectedService == .gemini {
+                    if key.isEmpty {
+                        self.geminiModels = []; self.selectedGeminiModelId = ""; self.geminiModelErrorMessage = "Gemini API Key is missing."
+                    } else { // Key is present
+                        self.fetchGeminiModels()
+                    }
                 }
             }
             .store(in: &cancellables)
     }
 
+    // fetchModelsForCurrentService() can be removed if not called externally,
+    // as specific fetchOpenAIModels/fetchGeminiModels are called by listeners/updaters.
+    // Keeping it for now if SettingsView's handleFocusChange still uses it.
     func fetchModelsForCurrentService() {
         switch selectedService {
         case .openAI:
-            fetchOpenAIModels()
+            if !openAIAPIKey.isEmpty && !openAIHost.isEmpty { fetchOpenAIModels() }
+            else if openAIAPIKey.isEmpty { openAIModelErrorMessage = "OpenAI API Key is missing."; openAIModels=[]; selectedOpenAIModelId="" }
+            else { openAIModelErrorMessage = "OpenAI API Host is missing."; openAIModels=[]; selectedOpenAIModelId="" }
         case .gemini:
-            fetchGeminiModels()
+            if !geminiAPIKey.isEmpty { fetchGeminiModels() }
+            else { geminiModelErrorMessage = "Gemini API Key is missing."; geminiModels=[]; selectedGeminiModelId="" }
         }
     }
 
     func fetchOpenAIModels() {
-        guard !openAIAPIKey.isEmpty else {
-            openAIModelErrorMessage = "OpenAI API Key is missing."
-            openAIModels = []
-            selectedOpenAIModelId = ""
-            return
-        }
+        guard !openAIAPIKey.isEmpty else { /* Handled by callers */ return }
+        guard !openAIHost.isEmpty else { /* Handled by callers */ return }
+
         isLoadingOpenAIModels = true
-        openAIModelErrorMessage = nil
+        openAIModelErrorMessage = nil // Clear previous errors before fetching
         Task { @MainActor in
             do {
-                let models = try await apiService.fetchOpenAIModels(apiKey: openAIAPIKey, apiHost: openAIHost.isEmpty ? "https://api.openai.com" : openAIHost)
+                // Pass current (potentially updated via @Published) values
+                let models = try await apiService.fetchOpenAIModels(apiKey: self.openAIAPIKey, apiHost: self.openAIHost)
                 self.openAIModels = models.sorted(by: { $0.id < $1.id })
                 if !self.openAIModels.contains(where: { $0.id == self.selectedOpenAIModelId }) {
                     self.selectedOpenAIModelId = self.openAIModels.first?.id ?? ""
                 }
-                if models.isEmpty && self.openAIModelErrorMessage == nil { // Only set if no other error occurred
+                if models.isEmpty && self.openAIModelErrorMessage == nil {
                     self.openAIModelErrorMessage = "No text models found for this API key/host."
                 }
             } catch let error as APIServiceError {
-                self.openAIModelErrorMessage = "Failed to fetch OpenAI models: \(error.localizedDescription)"
-                self.openAIModels = []
-                self.selectedOpenAIModelId = ""
+                self.openAIModelErrorMessage = "Fetch Error: \(error.localizedDescription)"
+                self.openAIModels = []; self.selectedOpenAIModelId = ""
             } catch {
-                self.openAIModelErrorMessage = "An unexpected error: \(error.localizedDescription)"
-                self.openAIModels = []
-                self.selectedOpenAIModelId = ""
+                self.openAIModelErrorMessage = "Unexpected Error: \(error.localizedDescription)"
+                self.openAIModels = []; self.selectedOpenAIModelId = ""
             }
             self.isLoadingOpenAIModels = false
         }
     }
 
     func fetchGeminiModels() {
-        guard !geminiAPIKey.isEmpty else {
-            geminiModelErrorMessage = "Gemini API Key is missing."
-            geminiModels = []
-            selectedGeminiModelId = ""
-            return
-        }
+        guard !geminiAPIKey.isEmpty else { /* Handled by callers */ return }
+
         isLoadingGeminiModels = true
-        geminiModelErrorMessage = nil
+        geminiModelErrorMessage = nil // Clear previous errors
         Task { @MainActor in
             do {
-                let models = try await apiService.fetchGeminiModels(apiKey: geminiAPIKey)
+                let models = try await apiService.fetchGeminiModels(apiKey: self.geminiAPIKey)
                 self.geminiModels = models.sorted(by: { $0.id < $1.id })
                 if !self.geminiModels.contains(where: { $0.id == self.selectedGeminiModelId }) {
                      self.selectedGeminiModelId = self.geminiModels.first?.id ?? ""
                 }
-                if models.isEmpty && self.geminiModelErrorMessage == nil { // Only set if no other error occurred
+                if models.isEmpty && self.geminiModelErrorMessage == nil {
                     self.geminiModelErrorMessage = "No text models found for this API key."
                 }
             } catch let error as APIServiceError {
-                self.geminiModelErrorMessage = "Failed to fetch Gemini models: \(error.localizedDescription)"
-                self.geminiModels = []
-                self.selectedGeminiModelId = ""
+                self.geminiModelErrorMessage = "Fetch Error: \(error.localizedDescription)"
+                self.geminiModels = []; self.selectedGeminiModelId = ""
             } catch {
-                self.geminiModelErrorMessage = "An unexpected error: \(error.localizedDescription)"
-                self.geminiModels = []
-                self.selectedGeminiModelId = ""
+                self.geminiModelErrorMessage = "Unexpected Error: \(error.localizedDescription)"
+                self.geminiModels = []; self.selectedGeminiModelId = ""
             }
             self.isLoadingGeminiModels = false
         }
@@ -223,17 +242,16 @@ class SettingsViewModel: ObservableObject {
     func saveSettings() {
         storedSelectedServiceRaw = selectedService.rawValue
         storedOpenAIAPIKey = openAIAPIKey
-        storedOpenAIHost = openAIHost.isEmpty ? "https://api.openai.com" : openAIHost
+        storedOpenAIHost = openAIHost // Save the actual value, even if empty. Defaulting is for display/use.
         storedOpenAIModelId = selectedOpenAIModelId
         storedGeminiAPIKey = geminiAPIKey
         storedGeminiModelId = selectedGeminiModelId
     }
 
     func restoreDefaultSettings() {
-        // Set to defaults
         let defaultService = TranslationServiceType.openAI
         let defaultAPIKey = ""
-        let defaultHost = "https://api.openai.com"
+        let defaultHost = "https://api.openai.com" // Standard default
         let defaultModelId = ""
 
         self.selectedService = defaultService
@@ -243,10 +261,7 @@ class SettingsViewModel: ObservableObject {
         self.geminiAPIKey = defaultAPIKey
         self.selectedGeminiModelId = defaultModelId
 
-        saveSettings() // Persist these defaults immediately
-
-        // Update model lists based on these new defaults
-        // This will clear models as keys are now empty.
+        saveSettings()
         updateModelsForSelectedService(service: self.selectedService, isInitialLoad: false)
     }
 
@@ -261,7 +276,7 @@ class SettingsViewModel: ObservableObject {
         openAIModelErrorMessage = nil
         geminiModelErrorMessage = nil
 
-        updateModelsForSelectedService(service: self.selectedService, isInitialLoad: true) // isInitialLoad true to force model load if keys exist
+        updateModelsForSelectedService(service: self.selectedService, isInitialLoad: true)
     }
 
     func presentAlert(title: String, message: String) {

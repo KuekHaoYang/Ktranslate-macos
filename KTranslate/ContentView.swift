@@ -1,4 +1,4 @@
-// Sources/KTranslate/ContentView.swift
+// KTranslate/ContentView.swift
 import SwiftUI
 import AVFoundation // For AVSpeechSynthesizer
 
@@ -6,20 +6,17 @@ struct ContentView: View {
     @StateObject private var viewModel = TranslationViewModel()
     @State private var showingSettings = false
 
-    // Available languages for pickers (excluding "Auto Detect" for target)
     private var sourceLanguages: [Language] = supportedLanguages
     private var targetLanguages: [Language] = supportedLanguages.filter { $0.code != "auto" }
 
     var body: some View {
         VStack(spacing: 0) {
-            // MARK: - Language Selection Area
             languageSelectionHeader()
                 .padding(.horizontal)
                 .padding(.top)
                 .padding(.bottom, 8)
 
-            // MARK: - Main Text Areas
-            HSplitView { // Or VStack for top/bottom layout
+            HSplitView {
                 sourceTextView()
                     .frame(minWidth: 300, idealWidth: 400, maxWidth: .infinity, minHeight: 200, idealHeight: 300, maxHeight: .infinity)
                 translatedTextView()
@@ -28,55 +25,58 @@ struct ContentView: View {
             .padding(.horizontal)
             .padding(.bottom)
 
-            // MARK: - Status Bar / Error Message
             statusBar()
                 .padding(.horizontal)
                 .padding(.bottom, 8)
         }
-        .frame(minWidth: 700, minHeight: 450) // Default window size
-        .background(.ultraThinMaterial) // Translucent background
+        .frame(minWidth: 700, minHeight: 450)
+        .background(.ultraThinMaterial)
         .sheet(isPresented: $showingSettings) {
-            // Ensure SettingsView is defined, even if as a placeholder initially
             SettingsView(isPresented: $showingSettings, onSettingsSaved: {
                 viewModel.settingsDidChange()
             })
         }
+        // Apply a default tint to the whole view, which often propagates to buttons.
+        // Individual buttons can override this if needed.
+        .tint(Color.accentColor)
     }
 
-    // MARK: - Subviews
     @ViewBuilder
     private func languageSelectionHeader() -> some View {
         HStack {
-            Picker("Source Language", selection: $viewModel.sourceLanguage) {
-                ForEach(sourceLanguages) { lang in
-                    Text(lang.name).tag(lang)
+            // Group for pickers and swap button to help with centering
+            HStack(spacing: 12) { // Added spacing for better visual separation
+                Picker("Source Language", selection: $viewModel.sourceLanguage) {
+                    ForEach(sourceLanguages) { lang in
+                        Text(lang.name).tag(lang)
+                    }
                 }
-            }
-            .pickerStyle(.menu)
-            .frame(maxWidth: .infinity)
+                .pickerStyle(.menu)
+                .frame(minWidth: 120, idealWidth: 150, maxWidth: 200) // More controlled flexible width
 
-            Button {
-                withAnimation(.easeInOut(duration: 0.3)) {
-                    viewModel.swapLanguages()
+                Button {
+                    withAnimation(.easeInOut(duration: 0.3)) {
+                        viewModel.swapLanguages()
+                    }
+                } label: {
+                    Image(systemName: "arrow.left.arrow.right")
+                        .font(.title3)
                 }
-            } label: {
-                Image(systemName: "arrow.left.arrow.right")
-                    .font(.title3) // Slightly smaller for balance
-            }
-            .buttonStyle(.borderless)
-            .contentShape(Rectangle())
-            .padding(.horizontal, 4)
-            .disabled(viewModel.sourceLanguage.code == "auto" || viewModel.isLoading) // Already good
+                .buttonStyle(.borderless) // Using borderless for icon buttons
+                .contentShape(Rectangle())
+                // .foregroundColor(Color.accentColor) // Tint applied at root should cover this if it's a primary action
 
-            Picker("Target Language", selection: $viewModel.targetLanguage) {
-                ForEach(targetLanguages) { lang in
-                    Text(lang.name).tag(lang)
+                Picker("Target Language", selection: $viewModel.targetLanguage) {
+                    ForEach(targetLanguages) { lang in
+                        Text(lang.name).tag(lang)
+                    }
                 }
+                .pickerStyle(.menu)
+                .frame(minWidth: 120, idealWidth: 150, maxWidth: 200) // More controlled flexible width
             }
-            .pickerStyle(.menu)
-            .frame(maxWidth: .infinity)
+            .frame(maxWidth: .infinity) // Allow this group to take available space to center
 
-            Spacer()
+            Spacer() // Pushes settings button to the right
 
             Button {
                 showingSettings = true
@@ -85,26 +85,27 @@ struct ContentView: View {
                     .font(.title3)
             }
             .buttonStyle(.borderless)
+            // .foregroundColor(Color.accentColor) // Tint applied at root
             .padding(.leading)
         }
     }
 
     @ViewBuilder
     private func sourceTextView() -> some View {
-        VStack(alignment: .leading, spacing: 5) { // Increased spacing slightly
+        VStack(alignment: .leading, spacing: 5) {
             Text("Source (\(viewModel.sourceLanguage.name))")
                 .font(.system(.headline, design: .rounded))
                 .foregroundColor(.secondary)
-                .padding(.leading, 5) // Indent header slightly
+                .padding(.leading, 5)
 
             ZStack(alignment: .topTrailing) {
                 TextEditor(text: $viewModel.sourceText)
                     .font(.system(.body, design: .rounded))
                     .frame(maxHeight: .infinity)
-                    .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous)) // Smoother corners
+                    .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
                     .overlay(
                         RoundedRectangle(cornerRadius: 10, style: .continuous)
-                            .stroke(Color.gray.opacity(0.4), lineWidth: 1.5) // Slightly thicker border
+                            .stroke(Color.gray.opacity(0.4), lineWidth: 1.5)
                     )
                     .disabled(viewModel.isLoading)
 
@@ -114,10 +115,10 @@ struct ContentView: View {
                     } label: {
                         Image(systemName: "xmark.circle.fill")
                             .font(.title3)
-                            .foregroundColor(.gray.opacity(0.8))
+                            // .foregroundColor(Color.gray.opacity(0.8)) // Default tint will apply
                     }
-                    .buttonStyle(.plain) // Use plain for better interaction with ZStack content
-                    .padding(10) // Increased padding
+                    .buttonStyle(.plain)
+                    .padding(10)
                     .transition(.opacity.combined(with: .scale))
                     .animation(.easeInOut(duration: 0.2), value: viewModel.sourceText.isEmpty)
                 }
@@ -129,9 +130,9 @@ struct ContentView: View {
                 .frame(maxWidth: .infinity, alignment: .trailing)
                 .padding(.trailing, 5)
         }
-        .padding(EdgeInsets(top: 8, leading: 8, bottom: 12, trailing: 8)) // Adjusted padding
-        .background(Color.primary.opacity(0.04)) // Subtle background for the text area box
-        .cornerRadius(12, antialiased: true) // Larger corner radius
+        .padding(EdgeInsets(top: 8, leading: 8, bottom: 12, trailing: 8))
+        .background(Color.primary.opacity(0.04))
+        .cornerRadius(12, antialiased: true)
     }
 
     @ViewBuilder
@@ -148,26 +149,27 @@ struct ContentView: View {
                         Button { viewModel.copyTranslatedTextToClipboard() } label: { Image(systemName: "doc.on.doc.fill").font(.title3) }
                             .buttonStyle(.plain)
                             .help("Copy to Clipboard")
+                            // .foregroundColor(Color.accentColor) // Tint applied at root
 
                         Button { viewModel.speakTranslatedText() } label: { Image(systemName: "speaker.wave.2.fill").font(.title3) }
                             .buttonStyle(.plain)
                             .help("Read Aloud")
+                            // .foregroundColor(Color.accentColor) // Tint applied at root
                     }
                     .padding(.trailing, 5)
-                    .transition(.opacity.animation(.easeInOut(duration: 0.3))) // Ensure tools fade in/out
+                    .transition(.opacity.animation(.easeInOut(duration: 0.3)))
                 }
             }
 
             ZStack {
-                // Translated Text Content Area
-                ScrollView { // Use ScrollView for potentially long text, TextEditor is not ideal for read-only if formatting is key
+                ScrollView {
                     Text(viewModel.translatedText)
                         .font(.system(.body, design: .rounded))
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(EdgeInsets(top: 8, leading: 10, bottom: 8, trailing: 10)) // Padding inside the scroll view content
-                        .opacity(viewModel.isLoading || viewModel.translatedText.isEmpty && viewModel.sourceText.isEmpty ? 0 : 1) // Hide when loading or truly empty
-                        .animation(.easeInOut(duration: 0.4), value: viewModel.translatedText) // Animate text changes
-                        .animation(.easeInOut(duration: 0.2), value: viewModel.isLoading) // Animate opacity on loading change
+                        .padding(EdgeInsets(top: 8, leading: 10, bottom: 8, trailing: 10))
+                        .opacity(viewModel.isLoading || viewModel.translatedText.isEmpty && viewModel.sourceText.isEmpty ? 0 : 1)
+                        .animation(.easeInOut(duration: 0.4), value: viewModel.translatedText)
+                        .animation(.easeInOut(duration: 0.2), value: viewModel.isLoading)
                 }
                 .frame(maxHeight: .infinity)
                 .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
@@ -175,25 +177,23 @@ struct ContentView: View {
                     RoundedRectangle(cornerRadius: 10, style: .continuous)
                         .stroke(Color.gray.opacity(0.4), lineWidth: 1.5)
                 )
-                .opacity(viewModel.isLoading ? 0.5 : 1.0) // Dim overall container slightly when loading
+                .opacity(viewModel.isLoading ? 0.5 : 1.0)
 
-                // Loading/Placeholder Content
                 if viewModel.isLoading {
                     VStack(spacing: 8) {
-                        ProgressView()
-                            .scaleEffect(1.2)
+                        ProgressView().scaleEffect(1.2)
                         Text("Translating...")
                             .font(.system(.caption, design: .rounded).weight(.medium))
                             .foregroundColor(.secondary)
                     }
-                    .transition(.opacity.animation(.easeInOut(duration: 0.2))) // Smooth appearance of loader
+                    .transition(.opacity.animation(.easeInOut(duration: 0.2)))
                 } else if viewModel.translatedText.isEmpty && !viewModel.sourceText.isEmpty && viewModel.errorMessage == nil {
                     Text("Translation will appear here.")
                         .font(.system(.callout, design: .rounded))
                         .foregroundColor(Color.gray.opacity(0.7))
-                        .transition(.opacity.animation(.easeInOut(duration: 0.3))) // Smooth appearance of placeholder
+                        .transition(.opacity.animation(.easeInOut(duration: 0.3)))
                 } else if viewModel.translatedText.isEmpty && viewModel.sourceText.isEmpty && viewModel.errorMessage == nil {
-                     Text("Enter text to translate.") // More specific initial placeholder
+                     Text("Enter text to translate.")
                         .font(.system(.callout, design: .rounded))
                         .foregroundColor(Color.gray.opacity(0.7))
                         .transition(.opacity.animation(.easeInOut(duration: 0.3)))
@@ -203,9 +203,6 @@ struct ContentView: View {
         .padding(EdgeInsets(top: 8, leading: 8, bottom: 12, trailing: 8))
         .background(Color.primary.opacity(0.04))
         .cornerRadius(12, antialiased: true)
-        // Consolidate animations for the whole block if general, or keep specific ones as above
-        // .animation(.easeInOut(duration: 0.3), value: viewModel.isLoading)
-        // .animation(.easeInOut(duration: 0.3), value: viewModel.translatedText)
     }
 
     @ViewBuilder
@@ -217,30 +214,21 @@ struct ContentView: View {
                     .foregroundColor(.red)
                     .lineLimit(2)
                     .truncationMode(.tail)
-                    .transition(.opacity.animation(.easeInOut(duration: 0.3))) // Ensure smooth transition
+                    .transition(.opacity.animation(.easeInOut(duration: 0.3)))
             } else {
-                 Text(" ") // Keep space for consistent height
+                 Text(" ")
                     .font(.caption)
             }
             Spacer()
-            // Optional: Add a small "Saved" confirmation for settings if desired,
-            // though settings view handles its own feedback.
         }
         .frame(height: 30)
-        // .animation(.easeInOut, value: viewModel.errorMessage) // This might be redundant if transition is on Text
     }
 }
 
-// MARK: - Preview
+// Preview remains the same
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
-            // For preview, you might want to create a mock TranslationViewModel
-            // with some initial data to see different states.
-            .environmentObject(TranslationViewModel()) // Basic preview
+            .environmentObject(TranslationViewModel())
     }
 }
-
-// Ensure SettingsView.swift is in the same directory or correctly imported.
-// If SettingsView.swift was created in Sources/KTranslate/ (not Sources/KTranslate/Views/),
-// then no import change is needed. The previous step placed it in Sources/KTranslate/.
