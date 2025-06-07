@@ -1,10 +1,4 @@
-//
-//  KTranslateApp.swift
-//  KTranslate
-//
-//  Created by Hao Yang Kuek on 06/06/2025.
-//
-
+// KTranslateApp.swift
 import SwiftUI
 
 @main
@@ -13,5 +7,6 @@ struct KTranslateApp: App {
         WindowGroup {
             ContentView()
         }
+        .windowStyle(HiddenTitleBarWindowStyle()) // Optional: For a cleaner look, if desired
     }
 }
