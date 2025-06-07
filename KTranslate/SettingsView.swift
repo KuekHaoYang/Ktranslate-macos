@@ -1,4 +1,4 @@
-// Sources/KTranslate/Views/SettingsView.swift
+// KTranslate/SettingsView.swift
 import SwiftUI
 
 struct SettingsView: View {
@@ -6,17 +6,17 @@ struct SettingsView: View {
     var onSettingsSaved: () -> Void // Callback to notify ContentView
 
     @StateObject private var viewModel = SettingsViewModel()
-    @FocusState private var focusedField: FocusableField? // For managing focus, e.g., after API key entry
+    @FocusState private var focusedField: FocusableField?
+    @State private var previousFocusedField: FocusableField? = nil // Added to track old focus
 
     enum FocusableField: Hashable {
         case openAIKey, openAIHost, geminiKey
     }
 
-    // To trigger model fetch when focus leaves API key fields
     private func handleFocusChange(oldValue: FocusableField?, newValue: FocusableField?) {
         // OpenAI: Fetch if focus moves away from API key or Host, and both are filled
         if (oldValue == .openAIKey && newValue != .openAIKey) || (oldValue == .openAIHost && newValue != .openAIHost) {
-            if !viewModel.openAIAPIKey.isEmpty && !viewModel.openAIHost.isEmpty && viewModel.selectedService == .openAI {
+            if !viewModel.openAIAPIKey.isEmpty && !(viewModel.openAIHost.isEmpty) && viewModel.selectedService == .openAI {
                  viewModel.fetchOpenAIModels()
             }
         }
@@ -28,34 +28,27 @@ struct SettingsView: View {
         }
     }
 
-
     var body: some View {
         VStack(spacing: 0) {
-            // MARK: - Header
             Text("Settings")
-                .font(.largeTitle.weight(.light)) // Adjusted font
-                .padding(.vertical) // More vertical padding
-
+                .font(.largeTitle.weight(.light))
+                .padding(.vertical)
             Divider()
-
-            // MARK: - Form Content
             Form {
-                // MARK: Service Selection
                 Section {
                     Picker("Translation Service", selection: $viewModel.selectedService) {
                         ForEach(TranslationServiceType.allCases) { service in
                             Text(service.rawValue).tag(service)
                         }
                     }
-                    .pickerStyle(.segmented) // More prominent style for service selection
+                    .pickerStyle(.segmented)
                     .padding(.vertical, 5)
                 } header: {
                     Text("Translation Provider")
                         .font(.headline)
-                        .padding(.top) // Add padding to section headers
+                        .padding(.top)
                 }
 
-                // MARK: Service-Specific Configuration
                 Group {
                     if viewModel.selectedService == .openAI {
                         openAISettings()
@@ -63,20 +56,19 @@ struct SettingsView: View {
                         geminiSettings()
                     }
                 }
-                .animation(.easeInOut, value: viewModel.selectedService) // Animate change between sections
+                .animation(.easeInOut, value: viewModel.selectedService)
             }
-            .formStyle(.grouped) // Grouped style for better visual separation on macOS
-
-            // MARK: - Footer Buttons
+            .formStyle(.grouped)
             Divider()
             footerButtons()
                 .padding()
         }
-        .frame(minWidth: 480, idealWidth: 520, maxWidth: 600, minHeight: 500, idealHeight: 580, maxHeight: 700) // Adjusted frame size
+        .frame(minWidth: 480, idealWidth: 520, maxWidth: 600, minHeight: 500, idealHeight: 580, maxHeight: 700)
         .background(.ultraThinMaterial)
-        .onChange(of: focusedField, perform: { oldVal, newVal in // Use new onChange syntax
-            handleFocusChange(oldValue: oldVal, newValue: newVal)
-        })
+        .onChange(of: focusedField) { newValue in // Corrected signature
+            handleFocusChange(oldValue: previousFocusedField, newValue: newValue)
+            previousFocusedField = newValue // Update after handling
+        }
         .alert(viewModel.alertTitle, isPresented: $viewModel.showAlert) {
             Button("OK", role: .cancel) {}
         } message: {
@@ -84,11 +76,10 @@ struct SettingsView: View {
         }
     }
 
-    // MARK: - OpenAI Settings Section
     @ViewBuilder
     private func openAISettings() -> some View {
         Section {
-            VStack(alignment: .leading, spacing: 3) { // Reduced spacing
+            VStack(alignment: .leading, spacing: 3) {
                 Text("API Key").font(.caption).foregroundColor(.gray)
                 SecureField("Enter your OpenAI API Key", text: $viewModel.openAIAPIKey)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
@@ -125,7 +116,6 @@ struct SettingsView: View {
         }
     }
 
-    // MARK: - Gemini Settings Section
     @ViewBuilder
     private func geminiSettings() -> some View {
         Section {
@@ -137,7 +127,7 @@ struct SettingsView: View {
             }
 
             modelPicker(
-                models: viewModel.geminiModels.map { PickerableModel(id: $0.id, name: $0.id) }, // Use computed 'id' for display
+                models: viewModel.geminiModels.map { PickerableModel(id: $0.id, name: $0.id) },
                 selection: $viewModel.selectedGeminiModelId,
                 isLoading: viewModel.isLoadingGeminiModels,
                 errorMessage: viewModel.geminiModelErrorMessage,
@@ -156,7 +146,6 @@ struct SettingsView: View {
         }
     }
 
-    // MARK: - Generic Model Picker
     struct PickerableModel: Identifiable, Hashable {
         let id: String
         let name: String
@@ -187,7 +176,7 @@ struct SettingsView: View {
                         Text(model.name).tag(model.id)
                     }
                 }
-                .pickerStyle(.menu) // Standard dropdown
+                .pickerStyle(.menu)
                 .disabled(isDisabled || models.isEmpty && !isLoading && errorMessage == nil)
 
                 if isLoading {
@@ -197,53 +186,40 @@ struct SettingsView: View {
         }
     }
 
-
-    // MARK: - Footer Buttons
     @ViewBuilder
     private func footerButtons() -> some View {
         HStack {
             Button("Restore Defaults") {
                 viewModel.restoreDefaultSettings()
-                // Optionally show an alert or confirmation
                 viewModel.presentAlert(title: "Settings Reset", message: "All settings have been restored to their default values.")
             }
-            .keyboardShortcut(.delete, modifiers: .command) // Example shortcut
+            .keyboardShortcut(.delete, modifiers: .command)
 
             Spacer()
 
             Button("Cancel") {
-                viewModel.revertChanges() // Discard changes
+                viewModel.revertChanges()
                 isPresented = false
             }
-            .keyboardShortcut(.escape, modifiers: []) // Standard cancel shortcut
+            .keyboardShortcut(.escape, modifiers: [])
 
             Button("Save") {
                 viewModel.saveSettings()
-                onSettingsSaved() // Notify ContentView to potentially refresh
+                onSettingsSaved()
                 isPresented = false
             }
-            .keyboardShortcut("s", modifiers: .command) // Standard save shortcut
+            .keyboardShortcut("s", modifiers: .command)
             .disabled( (viewModel.selectedService == .openAI && (viewModel.openAIAPIKey.isEmpty || viewModel.selectedOpenAIModelId.isEmpty)) ||
                        (viewModel.selectedService == .gemini && (viewModel.geminiAPIKey.isEmpty || viewModel.selectedGeminiModelId.isEmpty)) )
         }
     }
 }
 
-
-// MARK: - Preview
 struct SettingsView_Previews: PreviewProvider {
     static var previews: some View {
-        // Create a dummy binding for isPresented
         @State var isPresented: Bool = true
         SettingsView(isPresented: $isPresented, onSettingsSaved: {
             print("Settings saved (preview)")
         })
-        .onAppear {
-            // You can configure the viewModel for different preview states here if needed
-            // For example, to show OpenAI selected:
-            // let vm = SettingsViewModel()
-            // vm.selectedService = .openAI
-            // return SettingsView(isPresented: $isPresented, onSettingsSaved: {}, viewModel: vm) // if you pass vm as param
-        }
     }
 }

@@ -68,12 +68,15 @@ class APIService {
                 // Filter out models not typically used for text generation/translation
                 let id = model.id.lowercased()
                 let unwantedKeywords = ["vision", "image", "embed", "audio", "whisper", "tts", "davinci-002", "babbage-002", "ada", "curie"]
-                let requiredKeywords = ["gpt", "text-"] // Should include gpt models or general text models
+                // 'requiredKeywords' was removed from here
 
                 if unwantedKeywords.contains(where: { id.contains($0) }) { return false }
-                if id.contains("gpt") { return true } // Keep all gpt models not explicitly excluded
-                // Add more specific filtering if needed, e.g. by checking capabilities if available
-                return false // Default to false if not matching desired criteria
+                // The logic primarily relies on excluding unwanted and explicitly including "gpt"
+                if id.contains("gpt") { return true }
+                // Consider if "text-" prefix models (like "text-davinci-003") are still relevant
+                // For now, the filter prioritizes 'gpt' and excludes known non-text types.
+                // If other text-based models are needed, this logic might need expansion.
+                return false
             }
         } catch let error as APIServiceError {
             throw error
